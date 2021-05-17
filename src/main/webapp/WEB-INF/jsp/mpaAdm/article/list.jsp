@@ -15,7 +15,7 @@
                     <a href="javascript:history.back();" class="cursor-pointer">
                         <i class="fas fa-chevron-left"></i>
                     </a>
-                    <span>게시물 리스트</span>
+                    <span>SEARCH ARTICLE</span>
                 </div>
 
                 <form action="" class="grid gap-2 px-4 py-4">
@@ -52,7 +52,7 @@
                         <label class="label">
                             <span class="label-text">검색</span>
                         </label>
-                        <input type="submit" class="btn btn-sm btn-primary" value="검색" />
+                        <input type="submit" class="btn btn-sm" value="검색" />
                     </div>
                 </form>
             </div>
@@ -68,30 +68,30 @@
                     <a href="javascript:history.back();" class="cursor-pointer">
                         <i class="fas fa-chevron-left"></i>
                     </a>
-                    <span>게시물 리스트</span>
+                    <span>ARTICLE LIST</span>
                 </div>
 
                 <div class="grid gap-3 px-4 pt-4">
                     <div class="total-items">
-                        <span class="badge badge-primary">TOTAL ITEMS : </span>
+                        <span class="badge">TOTAL ITEMS : </span>
                         <span>${totalItemsCount}</span>
                     </div>
 
                     <div class="total-pages">
-                        <span class="badge badge-primary">TOTAL PAGES : </span>
+                        <span class="badge">TOTAL PAGES : </span>
                         <span>${totalPage}</span>
                     </div>
 
                     <div class="page">
-                        <span class="badge badge-primary">CURRENT PAGE : </span>
+                        <span class="badge">CURRENT PAGE : </span>
                         <span>${page}</span>
                     </div>
 
                     <hr />
 
-                    <div class="plain-link-wrap gap-3">
-                        <a href="write?boardId=${board.id}" class="plain-link">
-                            <span><i class="fas fa-edit"></i></span>
+                    <div class="gap-3 hover:underline">
+                        <a href="write?boardId=${board.id}">
+                            <span><i class="fas fa-pen-square"></i></span>
                             <span>글 작성</span>
                         </a>
                     </div>
@@ -141,17 +141,17 @@
                                 </a>
                             </div>
 
-                            <div class="plain-link-wrap gap-3 mt-4">
-                                <a href="${detailUri}" class="plain-link" title="자세히 보기">
-                                    <span><i class="fas fa-info"></i></span>
+                            <div class="gap-3 mt-4">
+                                <a href="${detailUri}" class="hover:underline" title="자세히 보기">
+                                    <span><i class="fas fa-info" style="color:DodgerBlue"></i></span>
                                     <span>자세히 보기</span>
                                 </a>
-                                <a href="#" class="plain-link">
-                                    <span><i class="fas fa-edit"></i></span>
+                                <a href="/mpaAdm/article/modify?id=${article.id}" class="hover:underline">
+                                    <span><i class="fas fa-edit" style="color:LimeGreen"></i></span>
                                     <span>수정</span>
                                 </a>
-                                <a onclick="if ( !confirm('삭제하시겠습니까?') ) return false;" href="#" class="plain-link">
-                                    <span><i class="fas fa-trash"></i></span>
+                                <a onclick="if ( !confirm('삭제하시겠습니까?') ) return false;" href="/mpaAdm/article/doDelete?id=${article.id}" class="hover:underline">
+                                    <span><i class="fas fa-trash" style="color:red"></i></span>
                                     <span>삭제</span>
                                 </a>
                             </div>

@@ -27,7 +27,7 @@
 
 <link rel="stylesheet" href="/resource/common.css" />
 <script src="/resource/common.js" defer></script>
-<title>INSTA</title>
+<title>The Blog</title>
 
 <script>
 const param = ${rq.paramJsonStr};

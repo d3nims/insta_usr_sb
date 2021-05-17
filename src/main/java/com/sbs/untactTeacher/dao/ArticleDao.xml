@@ -23,7 +23,7 @@
                 AND A.body LIKE CONCAT('%', #{searchKeyword}, '%')
             </if>
         </if>
-        AND A.delStatus = 0
+        AND A.delStatus = 0;
     </select>
 
     <select id="getForPrintArticles" resultMap="article">

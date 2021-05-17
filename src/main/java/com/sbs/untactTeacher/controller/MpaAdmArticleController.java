@@ -1,7 +1,10 @@
 package com.sbs.untactTeacher.controller;
 
+
+import com.sbs.untactTeacher.dto.Article;
 import com.sbs.untactTeacher.dto.*;
 import com.sbs.untactTeacher.service.ArticleService;
+import com.sbs.untactTeacher.service.GenFileService;
 import com.sbs.untactTeacher.service.ReplyService;
 import com.sbs.untactTeacher.util.Util;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @Slf4j
@@ -23,6 +29,9 @@ public class MpaAdmArticleController {
 
     @Autowired
     private ReplyService replyService;
+    
+    @Autowired
+    private GenFileService genFileService;
 
     @RequestMapping("/mpaAdm/article/detail")
     public String showDetail(HttpServletRequest req, int id) {
@@ -79,30 +88,65 @@ public class MpaAdmArticleController {
         return Util.msgAndReplace(req, writeArticleRd.getMsg(), replaceUri);
     }
 
-    @RequestMapping("/mpaAdm/article/doModify")
-    @ResponseBody
-    public ResultData doModify(Integer id, String title, String body) {
+    
+    
+    @RequestMapping("/mpaAdm/article/modify")
+	public String showModify(Integer id, HttpServletRequest req) {
+		if (id == null) {
+			return Util.msgAndBack(req, "id를 입력해주세요.");
+		}
 
+		Article article = articleService.getArticleById(id);
+
+		List<GenFile> files = genFileService.getGenFiles("article", article.getId(), "common", "attachment");
+		
+		Map<String, GenFile> filesMap = new HashMap<>();
+		
+		for (GenFile file : files) {
+			filesMap.put(file.getFileNo() + "", file);
+		}
+		
+		article.getExtraNotNull().put("file__common__attachment", filesMap);
+		req.setAttribute("article", article);
+
+		if (article == null) {
+			return Util.msgAndBack(req, "존재하지 않는 게시물번호 입니다.");
+		}
+
+		return "mpaAdm/article/modify";
+	}
+    
+    @RequestMapping("/mpaAdm/article/doModify")
+    public String doModify(HttpServletRequest req, Integer id, String title, String body) {
+
+    	ResultData rd = articleService.modifyArticle(id, title, body);
+    	
         if (Util.isEmpty(id)) {
-            return new ResultData("F-1", "번호를 입력해주세요.");
+            return Util.msgAndBack(req, "번호를 입력해주세요.");
         }
 
         if (Util.isEmpty(title)) {
-            return new ResultData("F-2", "제목을 입력해주세요.");
+            return Util.msgAndBack(req, "제목을 입력해주세요.");
         }
 
         if (Util.isEmpty(body)) {
-            return new ResultData("F-3", "내용을 입력해주세요.");
+            return Util.msgAndBack(req, "내용을 입력해주세요.");
         }
+        
 
         Article article = articleService.getArticleById(id);
 
         if (article == null) {
-            return new ResultData("F-4", "존재하지 않는 게시물 번호입니다.");
+            return Util.msgAndBack(req, "존재하지 않는 게시물 번호입니다.");
         }
 
-        return articleService.modifyArticle(id, title, body);
+        String redirectUri = "../article/detail?id=" + rd.getBody().get("id");
+
+        return Util.msgAndReplace(req, rd.getMsg(), redirectUri);
+        
     }
+    
+    
 
     @RequestMapping("/mpaAdm/article/doDelete")
 
@@ -110,6 +154,8 @@ public class MpaAdmArticleController {
         if (Util.isEmpty(id)) {
             return Util.msgAndBack(req, "id를 입력해주세요.");
         }
+        
+        Article article = articleService.getArticleById(id);
 
         ResultData rd = articleService.deleteArticleById(id);
 
@@ -121,6 +167,8 @@ public class MpaAdmArticleController {
 
         return Util.msgAndReplace(req, rd.getMsg(), redirectUri);
     }
+    
+    
 
     @RequestMapping("/mpaAdm/article/list")
     public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword,

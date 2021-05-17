@@ -6,10 +6,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.Map;
 
+import com.sbs.untactTeacher.dto.EntityDto;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class Article {
+public class Article extends EntityDto {
     private int id;
     private String regDate;
     private String updateDate;
