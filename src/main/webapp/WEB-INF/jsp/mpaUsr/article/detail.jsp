@@ -317,15 +317,15 @@
                             </div>
                             <div class="plain-link-wrap gap-3 mt-3 pl-14">
                                 <c:if test="${reply.memberId == rq.loginedMemberId}">
-                                    <a onclick="if ( confirm('정말 삭제하시겠습니까?') ) { ReplyList__deleteReply(this); } return false;" class="plain-link">
-                                        <span><i class="fas fa-trash-alt"></i></span>
-                                        <span>글 삭제</span>
+                                    <a onclick="if ( confirm('정말 삭제하시겠습니까?') ) { ReplyList__deleteReply(this); } return false;" class="hover:underline">
+                                        <span><i class="fas fa-trash" style="color:red"></i></span>
+                                        <span>삭제</span>
                                     </a>
                                 </c:if>
                                 <c:if test="${reply.memberId == rq.loginedMemberId}">
-                                    <button onclick="ReplyModify__showModal(this);" class="plain-link">
-                                        <span><i class="far fa-edit"></i></span>
-                                        <span>글 수정</span>
+                                    <button onclick="ReplyModify__showModal(this);" class="hover:underline">
+                                        <span><i class="fas fa-edit" style="color:LimeGreen"></i></span>
+                                        <span>수정</span>
                                     </button>
                                 </c:if>
                             </div>

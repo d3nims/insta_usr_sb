@@ -60,8 +60,8 @@ function ReplyModify__submitForm(form) {
             </div>
 
             <div class="mt-4 btn-wrap gap-1">
-                <button type="submit" href="#" class="btn btn-primary btn-sm mb-1">
-                    <span><i class="far fa-edit"></i></span>
+                <button type="submit" href="#" class="hover:underline btn btn-sm mb-1">
+                    <span><i class="fas fa-edit" style="color:LimeGreen"></i></span>
                     &nbsp;
                     <span>수정</span>
                 </button>

@@ -15,7 +15,7 @@
                     <a href="javascript:history.back();" class="cursor-pointer">
                         <i class="fas fa-chevron-left"></i>
                     </a>
-                    <span>회원 리스트</span>
+                    <span>MEMBER LIST</span>
                 </div>
 
                 <div class="grid gap-3 px-4 pt-4">

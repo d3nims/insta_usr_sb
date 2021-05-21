@@ -55,15 +55,15 @@
                 </div>
 
                 <div class="grid grid-item-float gap-3 mt-4">
-                    <a href="../member/checkPassword?afterUri=${Util.getUriEncoded('../member/modify')}" class="text-blue-500 hover:underline">
+                    <a href="../member/checkPassword?afterUri=${Util.getUriEncoded('../member/modify')}" class="text-black-500 hover:underline">
                         <span>
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-edit" style="color:LimeGreen"></i>
                             <span>수정</span>
                         </span>
                     </a>
-                    <a onclick="if ( !confirm('삭제하시겠습니까?') ) return false;" href="#" class="text-blue-500 hover:underline">
+                    <a onclick="if ( !confirm('탈퇴하시겠습니까?') ) return false;" href="#" class="text-black-500 hover:underline">
                         <span>
-                            <i class="fas fa-trash"></i>
+                            <i class="fas fa-trash" style="color:red"></i>
                             <span>탈퇴</span>
                         </span>
                     </a>

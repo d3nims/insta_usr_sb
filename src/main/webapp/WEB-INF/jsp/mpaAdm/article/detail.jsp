@@ -14,7 +14,7 @@
                 <a href="javascript:history.back();" class="cursor-pointer">
                     <i class="fas fa-chevron-left"></i>
                 </a>
-                <span>게시물 상세페이지</span>
+                <span>ARTICLE DETAIL</span>
             </div>
             <div>
                 <h1 class="title-bar-type-2 px-4">상세내용</h1>

@@ -149,7 +149,6 @@ public class MpaAdmArticleController {
     
 
     @RequestMapping("/mpaAdm/article/doDelete")
-
     public String doDelete(HttpServletRequest req, Integer id) {
         if (Util.isEmpty(id)) {
             return Util.msgAndBack(req, "id를 입력해주세요.");
