@@ -112,11 +112,9 @@
 
                 $('.section-reply-modify').css('display', 'flex');
             }
-
             function ReplyModify__hideModal() {
                 $('.section-reply-modify').hide();
             }
-
             let ReplyModify__submitFormDone = false;
             function ReplyModify__submitForm(form) {
                 if ( ReplyModify__submitFormDone ) {
@@ -128,10 +126,8 @@
                 if ( form.body.value.length == 0 ) {
                     alert('내용을 입력해주세요.');
                     form.body.focus();
-
                     return;
                 }
-
                 form.submit();
                 ReplyModify__submitFormDone = true;
             }

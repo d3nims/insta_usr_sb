@@ -32,9 +32,9 @@ custom:
   genFileDirPath: C:/work/insta-usr-sb-file
   needToChangePasswordFreeDays: 50
   siteMainUri: http://localhost:8026/
-  siteName: 인스타
+  siteName: 더 블로그
   emailFrom: no-reply@localhost
-  emailFromName: 인스타알림봇
+  emailFromName: 더 블로그 알림봇
   logging:
     dir: log
     level: debug

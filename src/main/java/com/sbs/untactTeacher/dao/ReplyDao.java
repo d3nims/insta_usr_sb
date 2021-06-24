@@ -8,6 +8,7 @@ import java.util.List;
 
 @Mapper
 public interface ReplyDao {
+	
     void write(@Param("relTypeCode") String relTypeCode,
                @Param("relId") int relId,
                @Param("memberId") int memberId,

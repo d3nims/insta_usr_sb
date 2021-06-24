@@ -36,6 +36,8 @@ public class MpaAdmMemberController {
         return "mpaAdm/member/list";
     }
 
+    
+    
     // checkPasswordAuthCode : 체크비밀번호인증코드
     @RequestMapping("/mpaAdm/member/modify")
     public String showModify(HttpServletRequest req, String checkPasswordAuthCode) {
@@ -206,6 +208,40 @@ public class MpaAdmMemberController {
     public String showJoin(HttpServletRequest req) {
         return "mpaAdm/member/join";
     }
+    
+    @RequestMapping("/mpaAdm/member/doJoin")
+    public String doJoin(HttpServletRequest req, String loginId, String loginPw, String name, String
+            nickname, String cellphoneNo, String email, MultipartRequest multipartRequest) {
+
+        Member oldMember = memberService.getMemberByLoginId(loginId);
+        if (oldMember != null) {
+            return Util.msgAndBack(req, loginId + "(은)는 이미 사용중인 로그인아이디 입니다.");
+        }
+
+        oldMember = memberService.getMemberByNameAndEmail(name, email);
+
+        if (oldMember != null) {
+            return Util.msgAndBack(req, String.format("%s님은 이미 %s 메일주소로 %s 에 가입하셨습니다.", name, email, 
+            		oldMember.getRegDate()));
+        }
+        ResultData joinRd = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
+
+        if (joinRd.isFail()) {
+            return Util.msgAndBack(req, joinRd.getMsg());
+        }
+
+        int newMemberId = (int) joinRd.getBody().get("id");
+        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
+
+        for (String fileInputName : fileMap.keySet()) {
+            MultipartFile multipartFile = fileMap.get(fileInputName);
+
+            if (multipartFile.isEmpty() == false) {
+                genFileService.save(multipartFile, newMemberId);
+            }
+        }
+        return Util.msgAndReplace(req, joinRd.getMsg(), "/");
+    }
 
     @RequestMapping("/mpaAdm/member/getLoginIdDup")
     @ResponseBody
@@ -217,43 +253,6 @@ public class MpaAdmMemberController {
         }
 
         return new ResultData("S-1", "사용가능한 로그인 아이디 입니다.", "loginId", loginId);
-    }
-
-    @RequestMapping("/mpaAdm/member/doJoin")
-    public String doJoin(HttpServletRequest req, String loginId, String loginPw, String name, String
-            nickname, String cellphoneNo, String email, MultipartRequest multipartRequest) {
-
-        Member oldMember = memberService.getMemberByLoginId(loginId);
-
-        if (oldMember != null) {
-            return Util.msgAndBack(req, loginId + "(은)는 이미 사용중인 로그인아이디 입니다.");
-        }
-
-        oldMember = memberService.getMemberByNameAndEmail(name, email);
-
-        if (oldMember != null) {
-            return Util.msgAndBack(req, String.format("%s님은 이미 %s 메일주소로 %s 에 가입하셨습니다.", name, email, oldMember.getRegDate()));
-        }
-
-        ResultData joinRd = memberService.join(loginId, loginPw, name, nickname, cellphoneNo, email);
-
-        if (joinRd.isFail()) {
-            return Util.msgAndBack(req, joinRd.getMsg());
-        }
-
-        int newMemberId = (int) joinRd.getBody().get("id");
-
-        Map<String, MultipartFile> fileMap = multipartRequest.getFileMap();
-
-        for (String fileInputName : fileMap.keySet()) {
-            MultipartFile multipartFile = fileMap.get(fileInputName);
-
-            if (multipartFile.isEmpty() == false) {
-                genFileService.save(multipartFile, newMemberId);
-            }
-        }
-
-        return Util.msgAndReplace(req, joinRd.getMsg(), "/");
     }
 
     @RequestMapping("/mpaAdm/member/checkPassword")

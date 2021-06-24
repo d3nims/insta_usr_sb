@@ -31,9 +31,6 @@ public class MemberService {
     @Autowired
     private MemberDao memberDao;
 
-    public Member getMemberByLoginId(String loginId) {
-        return memberDao.getMemberByLoginId(loginId);
-    }
 
     public int getNeedToChangePasswordFreeDays() {
         return needToChangePasswordFreeDays;
@@ -68,13 +65,23 @@ public class MemberService {
         return actor.getAuthLevel() == 7;
     }
 
-    public ResultData join(String loginId, String loginPw, String name, String nickname, String cellphoneNo, String email) {
+    public ResultData join(String loginId, String loginPw, String name, String nickname, 
+    		String cellphoneNo, String email) {
+    	
         memberDao.join(loginId, loginPw, name, nickname, cellphoneNo, email);
         int id = memberDao.getLastInsertId();
 
         setNeedToChangePasswordLater(id);
 
         return new ResultData("S-1", "회원가입이 완료되었습니다.", "id", id);
+    }
+
+    public Member getMemberByLoginId(String loginId) {
+        return memberDao.getMemberByLoginId(loginId);
+    }
+    
+    public Member getMemberByNameAndEmail(String name, String email) {
+        return memberDao.getMemberByNameAndEmail(name, email);
     }
 
     private void setNeedToChangePasswordLater(int actorId) {
@@ -85,11 +92,7 @@ public class MemberService {
     public Member getMemberById(int id) {
         return memberDao.getMemberById(id);
     }
-
-    public Member getMemberByNameAndEmail(String name, String email) {
-        return memberDao.getMemberByNameAndEmail(name, email);
-    }
-
+    
     public ResultData notifyTempLoginPwByEmail(Member actor) {
         String title = "[" + siteName + "] 임시 패스워드 발송";
         String tempPassword = Util.getTempPassword(6);

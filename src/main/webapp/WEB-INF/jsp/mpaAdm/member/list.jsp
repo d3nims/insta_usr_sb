@@ -20,7 +20,7 @@
 
                 <div class="grid gap-3 px-4 pt-4">
                     <div class="total-items">
-                        <span class="badge badge-primary">TOTAL ITEMS : </span>
+                        <span class="badge">TOTAL ITEMS : </span>
                         <span>${members.size()}</span>
                     </div>
                 </div>

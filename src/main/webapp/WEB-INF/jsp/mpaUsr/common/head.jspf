@@ -108,7 +108,7 @@
                 <li>
                     <a href="../member/join" class="h-full flex items-center px-5">
                         <span>
-                            <i class="fas fa-sign-in-alt"></i>
+                            <i class="fas fa-user"></i>
                         </span>
                         <span class="hidden md:block">&nbsp;JOIN</span>
                     </a>

@@ -133,7 +133,6 @@ public class MpaAdmArticleController {
             return Util.msgAndBack(req, "내용을 입력해주세요.");
         }
         
-
         Article article = articleService.getArticleById(id);
 
         if (article == null) {
@@ -170,8 +169,8 @@ public class MpaAdmArticleController {
     
 
     @RequestMapping("/mpaAdm/article/list")
-    public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType, String searchKeyword,
-                           @RequestParam(defaultValue = "1") int page) {
+    public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType,
+    		String searchKeyword, @RequestParam(defaultValue = "1") int page) {
         Board board = articleService.getBoardById(boardId);
 
         if (Util.isEmpty(searchKeywordType)) {
@@ -201,7 +200,8 @@ public class MpaAdmArticleController {
         req.setAttribute("page", page);
         req.setAttribute("totalPage", totalPage);
 
-        List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword, itemsCountInAPage, page);
+        List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword,
+        		itemsCountInAPage, page);
 
         req.setAttribute("articles", articles);
 
