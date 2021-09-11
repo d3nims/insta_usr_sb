@@ -7,7 +7,9 @@
 <%@ include file="../common/head.jspf" %>
 
 <section class="mainsection-1">
-	<div style = "font-size:25px" class="bg-white shadow-md rounded container mx-auto p-8 mt-8">
+	<img src="https://cdn.pixabay.com/photo/2021/08/24/15/38/sand-6570980_960_720.jpg"
+		alt="" style="margin-left: auto; margin-right: auto; display: block;">
+	<div style = "font-size:25px" class="bg-white shadow-md rounded container mx-auto p-8 mt-5">
 		Welcome to The l3log :)
 	</div>
 </section>

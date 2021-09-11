@@ -8,7 +8,9 @@
 <section class="mainsection-1">
 	<div style = "font-size:25px" class="bg-white shadow-md rounded container mx-auto p-8 mt-8">
 		Welcome to The l3log :)
+		
 	</div>
+	
 </section>
 
 <%@ include file="../common/foot.jspf" %>
