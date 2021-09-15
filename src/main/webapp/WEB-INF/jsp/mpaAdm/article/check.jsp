@@ -1,64 +1,10 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 
 <c:set var="pageTitle"
 	value="<span><i class='far fa-clipboard'></i></span> <span>${board.name} ARTICLE LIST</span>" />
-
 <%@ include file="../common/head.jspf"%>
-
-<div class="section section-article-search">
-	<div class="container mx-auto">
-		<div class="search-form-box">
-		    <div class="card bordered shadow-lg">
-                <div class="card-title">
-                    <a href="javascript:history.back();" class="cursor-pointer">
-                        <i class="fas fa-chevron-left"></i>
-                    </a>
-                    <span>SEARCH ARTICLE</span>
-                </div>
-
-                <form action="" class="grid gap-2 px-4 py-4">
-                    <input type="hidden" name="boardId" value="${board.id}" />
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">옵션</span>
-                        </label>
-                        <select class="select select-bordered" name="searchKeywordType">
-                            <option value="titleAndBody">제목+내용</option>
-                            <option value="title">제목</option>
-                            <option value="body">내용</option>
-                        </select>
-                        <script>
-                            const param__searchKeywordType = '${param.searchKeywordType}';
-                            if (param__searchKeywordType.length > 0) {
-                                $('.search-form-box form [name="searchKeywordType"]')
-                                    .val('${param.searchKeywordType}');
-                            }
-                        </script>
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">제목</span>
-                        </label>
-                        <input value="${param.searchKeyword}" class="input input-bordered"
-                            name="searchKeyword" type="text" placeholder="검색어를 입력해주세요."
-                            maxlength="10" />
-                    </div>
-
-                    <div class="form-control">
-                        <label class="label">
-                            <span class="label-text">검색</span>
-                        </label>
-                        <input type="submit" class="btn btn-sm" value="검색" />
-                    </div>
-                </form>
-            </div>
-		</div>
-	</div>
-</div>
 
 <div class="section section-article-list mt-8">
 	<div class="container mx-auto">
@@ -88,14 +34,13 @@
                     </div>
 
                     <hr />
-					<c:if test="${sessionScope.loginedMemberId != null}">
+
                     <div class="gap-3 hover:underline">
                         <a href="write?boardId=${board.id}">
                             <span><i class="fas fa-pen-square"></i></span>
                             <span>글 작성</span>
                         </a>
                     </div>
-                    </c:if>
                 </div>
 
                 <div class="item-bt-1-not-last-child">
@@ -196,5 +141,3 @@
 		</div>
 	</div>
 </div>
-
-<%@ include file="../common/foot.jspf"%>

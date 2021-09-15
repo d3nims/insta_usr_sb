@@ -65,7 +65,7 @@ public class MpaAdmArticleController {
     }
 
     @RequestMapping("/mpaAdm/article/doWrite")
-    public String doWrite(HttpServletRequest req, int boardId, String title, String body) {
+    public String doWrite(HttpServletRequest req, int boardId, String title, String body, Member actor) {
         if (Util.isEmpty(title)) {
             return Util.msgAndBack(req, "제목을 입력해주세요.");
         }
@@ -78,7 +78,7 @@ public class MpaAdmArticleController {
 
         int memberId = rq.getLoginedMemberId();
 
-        ResultData writeArticleRd = articleService.writeArticle(boardId, memberId, title, body);
+        ResultData writeArticleRd = articleService.writeArticle(boardId, memberId, title, body, actor);
 
         if (writeArticleRd.isFail()) {
             return Util.msgAndBack(req, writeArticleRd.getMsg());
@@ -166,7 +166,45 @@ public class MpaAdmArticleController {
         return Util.msgAndReplace(req, rd.getMsg(), redirectUri);
     }
     
-    
+    @RequestMapping("/mpaAdm/article/checkList")
+    public String showChecklist(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType,
+    		String searchKeyword, @RequestParam(defaultValue = "1") int page) {
+        Board board = articleService.getBoardById(boardId);
+
+        if (Util.isEmpty(searchKeywordType)) {
+            searchKeywordType = "titleAndBody";
+        }
+
+        if (board == null) {
+            return Util.msgAndBack(req, boardId + "번 게시판이 존재하지 않습니다.");
+        }
+
+        req.setAttribute("board", board);
+
+        int totalItemsCount = articleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
+
+        if (searchKeyword == null || searchKeyword.trim().length() == 0) {
+
+        }
+
+        req.setAttribute("totalItemsCount", totalItemsCount);
+
+        // 한 페이지에 보여줄 수 있는 게시물 최대 개수
+        int itemsCountInAPage = 20;
+        // 총 페이지 수
+        int totalPage = (int) Math.ceil(totalItemsCount / (double) itemsCountInAPage);
+
+        // 현재 페이지(임시)
+        req.setAttribute("page", page);
+        req.setAttribute("totalPage", totalPage);
+
+        List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword,
+        		itemsCountInAPage, page);
+
+        req.setAttribute("articles", articles);
+
+        return "mpaAdm/article/check";
+    }
 
     @RequestMapping("/mpaAdm/article/list")
     public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType,

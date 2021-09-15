@@ -1,5 +1,5 @@
 server:
-  port: 8026
+  port: 8027
 spring:
   servlet:
     multipart:

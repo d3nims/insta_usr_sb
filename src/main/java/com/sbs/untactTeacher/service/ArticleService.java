@@ -3,6 +3,7 @@ package com.sbs.untactTeacher.service;
 import com.sbs.untactTeacher.dao.ArticleDao;
 import com.sbs.untactTeacher.dto.Article;
 import com.sbs.untactTeacher.dto.Board;
+import com.sbs.untactTeacher.dto.Member;
 import com.sbs.untactTeacher.dto.ResultData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,8 @@ import java.util.List;
 public class ArticleService {
 	@Autowired
 	private ArticleDao articleDao;
+	@Autowired
+	private MemberService memberService;
 
 	public ResultData modifyArticle(int id, String title, String body) {
 		Article article = getArticleById(id);
@@ -48,11 +51,18 @@ public class ArticleService {
 		return new ResultData("S-1", id + "번 게시물이 삭제되었습니다.", "id", id, "boardId", article.getBoardId());
 	}
 
-	public ResultData writeArticle(int boardId, int memberId, String title, String body) {
-		articleDao.writeArticle(boardId, memberId, title, body);
-		int id = articleDao.getLastInsertId();
 
-		return new ResultData("S-1", "게시물이 작성되었습니다.", "id", id);
+	
+	public ResultData writeArticle(int boardId, int memberId, String title, String body, Member actor) {
+		articleDao.writeArticle(boardId, memberId, title, body, actor);
+		int id = articleDao.getLastInsertId();
+		
+		if (memberService.isAdmin(actor)) {
+			return new ResultData("S-1", "게시물이 작성되었습니다. ","id", id);
+		}
+
+		return new ResultData("S-1", "게시물이 작성되었습니다. "
+				+ "작성하신 게시물은 1~2일의 기간의 검증 후 게시판에 업로드 됩니다.", "id", id);
 	}
 
 	public Article getArticleById(int id) {

@@ -1,11 +1,13 @@
 package com.sbs.untactTeacher.dao;
 
-import com.sbs.untactTeacher.dto.Article;
-import com.sbs.untactTeacher.dto.Board;
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.util.List;
+import com.sbs.untactTeacher.dto.Article;
+import com.sbs.untactTeacher.dto.Board;
+import com.sbs.untactTeacher.dto.Member;
 
 @Mapper
 public interface ArticleDao {
@@ -13,7 +15,7 @@ public interface ArticleDao {
     boolean modifyArticle(@Param("id") int id, @Param("title") String title, @Param("body") String body);
 
     void writeArticle(@Param("boardId") int boardId, @Param("memberId") int memberId, @Param("title") String title,
-                      @Param("body") String body);
+                      @Param("body") String body, @Param("actor") Member actor);
 
     Article getArticleById(@Param("id") int id);
 
