@@ -1,0 +1,44 @@
+package com.sbs.untactTeacher.dao;
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+
+import com.sbs.untactTeacher.dto.Article;
+import com.sbs.untactTeacher.dto.Board;
+import com.sbs.untactTeacher.dto.Member;
+
+@Mapper
+public interface AdmArticleDao {
+	
+    boolean modifyArticle(@Param("id") int id, @Param("title") String title, @Param("body") String body);
+
+    void writeArticle(@Param("boardId") int boardId, @Param("memberId") int memberId, @Param("title") String title,
+                      @Param("body") String body, @Param("actor") Member actor);
+
+    Article getArticleById(@Param("id") int id);
+
+    int getLastInsertId();
+
+    void deleteArticleById(@Param("id") int id);
+
+    Board getBoardById(@Param("id") int id);
+
+    int getArticlesTotalCount(@Param("boardId") int boardId,
+                              @Param("searchKeywordTypeCode") String searchKeywordTypeCode, 
+                              @Param("searchKeyword") String searchKeyword);
+
+    List<Article> getForPrintCheck(@Param("boardId") int boardId,
+            @Param("searchKeywordTypeCode") String searchKeywordTypeCode, 
+            @Param("searchKeyword") String searchKeyword,
+            @Param("limitFrom") int limitFrom, @Param("limitTake") int limitTake);
+    
+    List<Article> getForPrintArticles(@Param("boardId") int boardId,
+                                      @Param("searchKeywordTypeCode") String searchKeywordTypeCode, 
+                                      @Param("searchKeyword") String searchKeyword,
+                                      @Param("limitFrom") int limitFrom, @Param("limitTake") int limitTake);
+    
+
+    Article getForPrintArticleById(@Param("id") int id);
+}

@@ -66,6 +66,7 @@ public class MpaUsrArticleController {
         }
 
         Rq rq = (Rq)req.getAttribute("rq");
+        
 
         int memberId = rq.getLoginedMemberId();
 
@@ -75,9 +76,9 @@ public class MpaUsrArticleController {
             return Util.msgAndBack(req, writeArticleRd.getMsg());
         }
 
-        String replaceUri = "detail?id=" + writeArticleRd.getBody().get("id");
+        String redirectUri = "../article/list?boardId=" + writeArticleRd.getBody().get("boardId");
         
-        return Util.msgAndReplace(req, writeArticleRd.getMsg(), replaceUri);
+        return Util.msgAndReplace(req, writeArticleRd.getMsg(), redirectUri);
     }
 
     @RequestMapping("/mpaUsr/article/doModify")

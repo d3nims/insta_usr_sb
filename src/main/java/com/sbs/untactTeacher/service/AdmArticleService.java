@@ -1,22 +1,46 @@
 package com.sbs.untactTeacher.service;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.sbs.untactTeacher.dao.AdmArticleDao;
 import com.sbs.untactTeacher.dao.ArticleDao;
 import com.sbs.untactTeacher.dto.Article;
 import com.sbs.untactTeacher.dto.Board;
 import com.sbs.untactTeacher.dto.Member;
 import com.sbs.untactTeacher.dto.ResultData;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
-public class ArticleService {
+public class AdmArticleService {
+	@Autowired
+	private AdmArticleDao admArticleDao;
 	@Autowired
 	private ArticleDao articleDao;
 	@Autowired
 	private MemberService memberService;
 
+	public static String IsAccepted(Article article) {
+        switch (article.getIsAccepted()) {
+            case 1:
+                return "승인대기";
+            case 0:
+                return "승인";
+            case -1:
+                return "반려";
+            default:
+                return "";
+        }
+    }
+	
+	public static boolean AcceptStatus(Article article) {
+        if ( article.getIsAccepted() == -1 ) {
+            return false;
+        }
+        return article.getIsAccepted() == 0;
+    }
+	
 	public ResultData modifyArticle(int id, String title, String body) {
 		Article article = getArticleById(id);
 
@@ -54,15 +78,12 @@ public class ArticleService {
 
 	
 	public ResultData writeArticle(int boardId, int memberId, String title, String body, Member actor) {
-		articleDao.writeArticle(boardId, memberId, title, body, actor);
-		int id = articleDao.getLastInsertId();
+		admArticleDao.writeArticle( boardId, memberId, title, body, actor);
+		int id = admArticleDao.getLastInsertId();
 		
-		if (memberService.isAdmin(actor)) {
-			return new ResultData("S-1", "게시물이 작성되었습니다. ","id", id, "boardId", boardId);
-		}
 		
-		return new ResultData("S-2", "게시물이 작성되었습니다. "
-				+ "작성하신 게시물은 1~2일의 기간의 검증 후 게시판에 업로드 됩니다.", "boardId", boardId, "id", id);
+		
+		return new ResultData("S-1", "게시물이 작성되었습니다. ","id", id, "boardId", boardId);
 	}
 
 	public Article getArticleById(int id) {
@@ -78,19 +99,36 @@ public class ArticleService {
 			searchKeyword = null;
 		}
 
-		return articleDao.getArticlesTotalCount(boardId, searchKeywordTypeCode, searchKeyword);
+		return admArticleDao.getArticlesTotalCount(boardId, searchKeywordTypeCode, searchKeyword);
 	}
-
-	public List<Article> getForPrintArticles(int boardId, String searchKeywordTypeCode, String searchKeyword,
+	
+	public List<Article> getForPrintArticles(Article article, Member actor, int boardId, String searchKeywordTypeCode, String searchKeyword,
 			int itemsCountInAPage, int page) {
+		
+		AdmArticleService.AcceptStatus(article);
 		if (searchKeyword != null && searchKeyword.length() == 0) {
 			searchKeyword = null;
 		}
 
+		if (actor.getAuthLevel() == 7) {
+			return ;
+		}
 		int limitFrom = (page - 1) * itemsCountInAPage;
 		int limitTake = itemsCountInAPage;
 
-		return articleDao.getForPrintArticles(boardId, searchKeywordTypeCode, searchKeyword, limitFrom, limitTake);
+		return admArticleDao.getForPrintArticles(boardId, searchKeywordTypeCode, searchKeyword, limitFrom, limitTake);
+	}
+
+	public List<Article> getForPrintCheck(int boardId, String searchKeywordTypeCode, String searchKeyword,
+			int itemsCountInAPage, int page) {
+		if (searchKeyword != null && searchKeyword.length() == 0) {
+			searchKeyword = null;
+		}
+		
+		int limitFrom = (page - 1) * itemsCountInAPage;
+		int limitTake = itemsCountInAPage;
+
+		return admArticleDao.getForPrintCheck(boardId, searchKeywordTypeCode, searchKeyword, limitFrom, limitTake);
 	}
 
 	public Article getForPrintArticleById(int id) {

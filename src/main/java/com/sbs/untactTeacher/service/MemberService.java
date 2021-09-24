@@ -57,6 +57,7 @@ public class MemberService {
                 return "";
         }
     }
+    
 
     public boolean isAdmin(Member actor) {
         if ( actor == null ) {

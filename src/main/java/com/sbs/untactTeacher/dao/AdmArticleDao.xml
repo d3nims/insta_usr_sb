@@ -3,7 +3,7 @@
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.sbs.untactTeacher.dao.ArticleDao">
+<mapper namespace="com.sbs.untactTeacher.dao.AdmArticleDao">
     <select id="getArticlesTotalCount" resultType="int">
         SELECT COUNT(*) AS cnt
         FROM article AS A
@@ -23,8 +23,37 @@
                 AND A.body LIKE CONCAT('%', #{searchKeyword}, '%')
             </if>
         </if>
-        AND A.delStatus = 0
-        AND A.IsAccepted = 1;
+        AND A.IsAccepted = 0
+        AND A.delStatus = 0;
+       
+    </select>
+
+	<select id="getForPrintCheck" resultMap="article">
+        SELECT A.*,
+        IFNULL(M.nickname, "삭제된_회원") AS extra__writerName,
+        IFNULL(M.name, "삭제된_회원") AS extra__writerRealName
+        FROM article AS A
+        LEFT JOIN member AS M
+        ON A.memberId = M.id
+        WHERE A.boardId = #{boardId}
+        <if test="searchKeyword != null">
+            <if test="searchKeywordTypeCode == 'titleAndBody'">
+                AND (
+                A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+                OR
+                A.body LIKE CONCAT('%', #{searchKeyword}, '%')
+                )
+            </if>
+            <if test="searchKeywordTypeCode == 'title'">
+                AND A.title LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+            <if test="searchKeywordTypeCode == 'body'">
+                AND A.body LIKE CONCAT('%', #{searchKeyword}, '%')
+            </if>
+        </if>
+        AND A.IsAccepted = 0
+        ORDER BY A.id DESC
+        LIMIT #{limitFrom}, #{limitTake};
     </select>
 
     <select id="getForPrintArticles" resultMap="article">
@@ -50,10 +79,12 @@
                 AND A.body LIKE CONCAT('%', #{searchKeyword}, '%')
             </if>
         </if>
-        AND A.IsAccepted = 1
+        
         ORDER BY A.id DESC
         LIMIT #{limitFrom}, #{limitTake};
     </select>
+    
+    
 
     <select id="getBoardById" resultType="Board">
         SELECT *
@@ -125,6 +156,7 @@
         <id property="boardId" column="boardId"/>
         <id property="extra__writerName" column="extra__writerName"/>
         <id property="IsAccepted" column="IsAccepted"/>
+        
 
         <association property="extra" javaType="map">
             <id property="writerName" column="extra__writerName"/>

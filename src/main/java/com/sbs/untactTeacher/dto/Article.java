@@ -27,6 +27,7 @@ public class Article extends EntityDto {
     private int repliesCount;
     private int likeCount;
     private int dislikeCount;
+    private int IsAccepted;
 
     private Map<String, Object> extra;
 

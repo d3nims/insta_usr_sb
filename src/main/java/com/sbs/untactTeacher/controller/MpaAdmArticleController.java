@@ -3,6 +3,7 @@ package com.sbs.untactTeacher.controller;
 
 import com.sbs.untactTeacher.dto.Article;
 import com.sbs.untactTeacher.dto.*;
+import com.sbs.untactTeacher.service.AdmArticleService;
 import com.sbs.untactTeacher.service.ArticleService;
 import com.sbs.untactTeacher.service.GenFileService;
 import com.sbs.untactTeacher.service.ReplyService;
@@ -25,7 +26,7 @@ import java.util.Map;
 public class MpaAdmArticleController {
 
     @Autowired
-    private ArticleService articleService;
+    private AdmArticleService admArticleService;
 
     @Autowired
     private ReplyService replyService;
@@ -35,14 +36,14 @@ public class MpaAdmArticleController {
 
     @RequestMapping("/mpaAdm/article/detail")
     public String showDetail(HttpServletRequest req, int id) {
-        Article article = articleService.getForPrintArticleById(id);
+        Article article = admArticleService.getForPrintArticleById(id);
         List<Reply> replies = replyService.getForPrintRepliesByRelTypeCodeAndRelId("article", id);
 
         if (article == null) {
             return Util.msgAndBack(req, id + "번 게시물이 존재하지 않습니다.");
         }
 
-        Board board = articleService.getBoardById(article.getBoardId());
+        Board board = admArticleService.getBoardById(article.getBoardId());
 
         req.setAttribute("replies", replies);
         req.setAttribute("article", article);
@@ -53,7 +54,7 @@ public class MpaAdmArticleController {
 
     @RequestMapping("/mpaAdm/article/write")
     public String showWrite(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId) {
-        Board board = articleService.getBoardById(boardId);
+        Board board = admArticleService.getBoardById(boardId);
 
         if (board == null) {
             return Util.msgAndBack(req, boardId + "번 게시판이 존재하지 않습니다.");
@@ -77,15 +78,16 @@ public class MpaAdmArticleController {
         Rq rq = (Rq)req.getAttribute("rq");
 
         int memberId = rq.getLoginedMemberId();
-
-        ResultData writeArticleRd = articleService.writeArticle(boardId, memberId, title, body, actor);
+        
+        ResultData writeArticleRd = admArticleService.writeArticle(boardId, memberId, title, body, actor);
 
         if (writeArticleRd.isFail()) {
             return Util.msgAndBack(req, writeArticleRd.getMsg());
         }
-
-        String replaceUri = "detail?id=" + writeArticleRd.getBody().get("id");
-        return Util.msgAndReplace(req, writeArticleRd.getMsg(), replaceUri);
+        
+        String redirectUri = "../article/list?boardId=" + writeArticleRd.getBody().get("boardId");
+        
+        return Util.msgAndReplace(req, writeArticleRd.getMsg(), redirectUri);
     }
 
     
@@ -96,7 +98,7 @@ public class MpaAdmArticleController {
 			return Util.msgAndBack(req, "id를 입력해주세요.");
 		}
 
-		Article article = articleService.getArticleById(id);
+		Article article = admArticleService.getArticleById(id);
 
 		List<GenFile> files = genFileService.getGenFiles("article", article.getId(), "common", "attachment");
 		
@@ -119,7 +121,7 @@ public class MpaAdmArticleController {
     @RequestMapping("/mpaAdm/article/doModify")
     public String doModify(HttpServletRequest req, Integer id, String title, String body) {
 
-    	ResultData rd = articleService.modifyArticle(id, title, body);
+    	ResultData rd = admArticleService.modifyArticle(id, title, body);
     	
         if (Util.isEmpty(id)) {
             return Util.msgAndBack(req, "번호를 입력해주세요.");
@@ -133,7 +135,7 @@ public class MpaAdmArticleController {
             return Util.msgAndBack(req, "내용을 입력해주세요.");
         }
         
-        Article article = articleService.getArticleById(id);
+        Article article = admArticleService.getArticleById(id);
 
         if (article == null) {
             return Util.msgAndBack(req, "존재하지 않는 게시물 번호입니다.");
@@ -153,9 +155,9 @@ public class MpaAdmArticleController {
             return Util.msgAndBack(req, "id를 입력해주세요.");
         }
         
-        Article article = articleService.getArticleById(id);
+        Article article = admArticleService.getArticleById(id);
 
-        ResultData rd = articleService.deleteArticleById(id);
+        ResultData rd = admArticleService.deleteArticleById(id);
 
         if (rd.isFail()) {
             return Util.msgAndBack(req, rd.getMsg());
@@ -169,7 +171,7 @@ public class MpaAdmArticleController {
     @RequestMapping("/mpaAdm/article/checkList")
     public String showChecklist(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType,
     		String searchKeyword, @RequestParam(defaultValue = "1") int page) {
-        Board board = articleService.getBoardById(boardId);
+        Board board = admArticleService.getBoardById(boardId);
 
         if (Util.isEmpty(searchKeywordType)) {
             searchKeywordType = "titleAndBody";
@@ -181,7 +183,7 @@ public class MpaAdmArticleController {
 
         req.setAttribute("board", board);
 
-        int totalItemsCount = articleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
+        int totalItemsCount = admArticleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
 
         if (searchKeyword == null || searchKeyword.trim().length() == 0) {
 
@@ -198,7 +200,7 @@ public class MpaAdmArticleController {
         req.setAttribute("page", page);
         req.setAttribute("totalPage", totalPage);
 
-        List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword,
+        List<Article> articles = admArticleService.getForPrintCheck(boardId, searchKeywordType, searchKeyword,
         		itemsCountInAPage, page);
 
         req.setAttribute("articles", articles);
@@ -209,7 +211,7 @@ public class MpaAdmArticleController {
     @RequestMapping("/mpaAdm/article/list")
     public String showList(HttpServletRequest req, @RequestParam(defaultValue = "1") int boardId, String searchKeywordType,
     		String searchKeyword, @RequestParam(defaultValue = "1") int page) {
-        Board board = articleService.getBoardById(boardId);
+        Board board = admArticleService.getBoardById(boardId);
 
         if (Util.isEmpty(searchKeywordType)) {
             searchKeywordType = "titleAndBody";
@@ -221,7 +223,7 @@ public class MpaAdmArticleController {
 
         req.setAttribute("board", board);
 
-        int totalItemsCount = articleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
+        int totalItemsCount = admArticleService.getArticlesTotalCount(boardId, searchKeywordType, searchKeyword);
 
         if (searchKeyword == null || searchKeyword.trim().length() == 0) {
 
@@ -238,7 +240,7 @@ public class MpaAdmArticleController {
         req.setAttribute("page", page);
         req.setAttribute("totalPage", totalPage);
 
-        List<Article> articles = articleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword,
+        List<Article> articles = admArticleService.getForPrintArticles(boardId, searchKeywordType, searchKeyword,
         		itemsCountInAPage, page);
 
         req.setAttribute("articles", articles);
@@ -253,7 +255,7 @@ public class MpaAdmArticleController {
             return new ResultData("F-1", "번호를 입력해주세요.");
         }
 
-        Article article = articleService.getArticleById(id);
+        Article article = admArticleService.getArticleById(id);
 
         if (article == null) {
             return new ResultData("F-1", id + "번 글은 존재하지 않습니다.", "id", id);
